@@ -1,0 +1,39 @@
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#0b0b0b;color:#fff}
+
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#070707,#220000);padding:20px}
+.login-box{width:100%;max-width:420px;background:#141414;padding:45px;border-radius:28px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.45);border:1px solid #292929}
+.login-box img{height:90px;margin-bottom:25px}
+.login-box h1{font-size:30px}
+.login-box p{color:#aaa;margin:10px 0 30px}
+.login-box input{width:100%;padding:17px;margin-bottom:16px;border:none;border-radius:14px;background:#222;color:#fff;font-size:16px;outline:none}
+.login-box button{width:100%;padding:17px;border:none;border-radius:14px;background:#e30613;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
+
+.admin-layout{min-height:100vh;display:flex;background:#0d0d0d}
+.sidebar{width:280px;background:#111;border-right:1px solid #262626;padding:30px 22px;position:fixed;height:100vh}
+.sidebar-logo{text-align:center;margin-bottom:40px}
+.sidebar-logo img{height:85px;margin-bottom:12px}
+.sidebar-logo h2{font-size:24px;color:#fff}
+.sidebar-menu{display:grid;gap:12px}
+.sidebar-menu a{color:#ddd;text-decoration:none;background:#1a1a1a;padding:16px 18px;border-radius:14px;font-weight:bold;transition:.3s}
+.sidebar-menu a:hover{background:#e30613;color:white;transform:translateX(6px)}
+
+.admin-main{margin-left:280px;padding:45px;width:calc(100% - 280px)}
+.dashboard h1{
+    font-size:42px;
+    margin-bottom:8px;
+    color:white;
+}
+.dashboard p{color:#aaa;margin-bottom:35px;font-size:18px}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:25px}
+.stat-card{background:#171717;border:1px solid #292929;border-radius:24px;padding:32px;box-shadow:0 15px 40px rgba(0,0,0,.25);font-size:32px;transition:.3s}
+.stat-card:hover{transform:translateY(-8px);border-color:#e30613}
+.stat-card h3{font-size:46px;margin:15px 0 5px;color:#e30613}
+.stat-card span{font-size:17px;color:#ccc}
+
+@media(max-width:850px){
+  .admin-layout{display:block}
+  .sidebar{position:relative;width:100%;height:auto}
+  .admin-main{margin-left:0;width:100%;padding:25px}
+}
