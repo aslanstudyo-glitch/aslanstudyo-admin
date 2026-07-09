@@ -21,8 +21,16 @@ function Sidebar({ activePage, setActivePage }) {
           📸 Galeri
         </button>
 
-        <button>🎥 Videolar</button>
-        <button>💬 Yorumlar</button>
+        <button
+          className={activePage === "videos" ? "active" : ""}
+          onClick={() => setActivePage("videos")}
+        >
+          🎥 Videolar
+        </button>
+
+        <button>
+          💬 Yorumlar
+        </button>
 
         <button
           className={activePage === "reservations" ? "active" : ""}
