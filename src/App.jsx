@@ -2,6 +2,7 @@ import { useState } from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Gallery from "./pages/Gallery";
+import Videos from "./pages/Videos";
 import Reservations from "./pages/Reservations";
 import Settings from "./pages/Settings";
 import AdminLayout from "./layouts/AdminLayout";
@@ -19,6 +20,7 @@ function App() {
     <AdminLayout activePage={activePage} setActivePage={setActivePage}>
       {activePage === "dashboard" && <Dashboard />}
       {activePage === "gallery" && <Gallery />}
+      {activePage === "videos" && <Videos />}
       {activePage === "reservations" && <Reservations />}
       {activePage === "settings" && <Settings />}
     </AdminLayout>
