@@ -28,6 +28,13 @@ function Sidebar({ activePage, setActivePage }) {
           🎥 Videolar
         </button>
 
+        <button
+          className={activePage === "radio" ? "active" : ""}
+          onClick={() => setActivePage("radio")}
+        >
+          📻 Radyo
+        </button>
+
         <button>
           💬 Yorumlar
         </button>
