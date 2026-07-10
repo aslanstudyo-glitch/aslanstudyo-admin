@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Gallery from "./pages/Gallery";
 import Videos from "./pages/Videos";
 import Radio from "./pages/Radio";
+import Announcements from "./pages/Announcements";
 import Reservations from "./pages/Reservations";
 import Settings from "./pages/Settings";
 import AdminLayout from "./layouts/AdminLayout";
@@ -23,6 +24,7 @@ function App() {
       {activePage === "gallery" && <Gallery />}
       {activePage === "videos" && <Videos />}
       {activePage === "radio" && <Radio />}
+      {activePage === "announcements" && <Announcements />}
       {activePage === "reservations" && <Reservations />}
       {activePage === "settings" && <Settings />}
     </AdminLayout>

@@ -35,6 +35,13 @@ function Sidebar({ activePage, setActivePage }) {
           📻 Radyo
         </button>
 
+        <button
+          className={activePage === "announcements" ? "active" : ""}
+          onClick={() => setActivePage("announcements")}
+        >
+          📰 Duyurular
+        </button>
+
         <button>
           💬 Yorumlar
         </button>
