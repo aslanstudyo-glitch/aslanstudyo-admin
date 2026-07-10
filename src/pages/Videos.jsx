@@ -7,6 +7,7 @@ import {
   doc,
   getDocs,
   serverTimestamp,
+  setDoc,
 } from "firebase/firestore";
 
 const CLOUD_NAME = "byzx0nfe";
@@ -20,6 +21,7 @@ function Videos() {
   const [videos, setVideos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [loadingVideos, setLoadingVideos] = useState(true);
+  const [heroVideoUrl, setHeroVideoUrl] = useState("");
 
   const loadVideos = async () => {
     try {
@@ -131,6 +133,33 @@ function Videos() {
     }
   };
 
+  const makeHeroVideo = async (video) => {
+    const approved = window.confirm(
+      `"${video.title}" videosunu ana sayfanın arka plan videosu yapmak istiyor musun?`
+    );
+
+    if (!approved) {
+      return;
+    }
+
+    try {
+      await setDoc(
+        doc(db, "settings", "site"),
+        {
+          heroVideo: video.videoUrl,
+          heroVideoTitle: video.title,
+        },
+        { merge: true }
+      );
+
+      setHeroVideoUrl(video.videoUrl);
+      alert("Video ana sayfa arka planı olarak ayarlandı.");
+    } catch (error) {
+      console.error("Hero video ayarlanamadı:", error);
+      alert("Hero video ayarlanamadı.");
+    }
+  };
+
   const removeVideo = async (video) => {
     const approved = window.confirm(
       `"${video.title}" videosunu siteden kaldırmak istiyor musun?`
@@ -142,6 +171,7 @@ function Videos() {
 
     try {
       await deleteDoc(doc(db, "videos", video.id));
+
       setVideos((currentVideos) =>
         currentVideos.filter((item) => item.id !== video.id)
       );
@@ -241,56 +271,90 @@ function Videos() {
           marginTop: "25px",
         }}
       >
-        {videos.map((video) => (
-          <article
-            key={video.id}
-            style={{
-              background: "#181818",
-              border: "1px solid #333",
-              borderRadius: "16px",
-              padding: "14px",
-            }}
-          >
-            <video
-              src={video.videoUrl}
-              controls
-              preload="metadata"
+        {videos.map((video) => {
+          const isHero = heroVideoUrl === video.videoUrl;
+
+          return (
+            <article
+              key={video.id}
               style={{
-                width: "100%",
-                aspectRatio: "16 / 9",
-                objectFit: "cover",
-                background: "#000",
-                borderRadius: "12px",
-              }}
-            />
-
-            <h3 style={{ margin: "14px 0 8px" }}>{video.title}</h3>
-
-            <p style={{ margin: "6px 0" }}>📂 {video.category}</p>
-
-            {video.featured && (
-              <p style={{ margin: "6px 0" }}>⭐ Öne çıkarılmış video</p>
-            )}
-
-            <button
-              type="button"
-              onClick={() => removeVideo(video)}
-              style={{
-                width: "100%",
-                marginTop: "14px",
-                padding: "12px",
-                border: "none",
-                borderRadius: "10px",
-                background: "#e30613",
-                color: "#fff",
-                fontWeight: "700",
-                cursor: "pointer",
+                background: "#181818",
+                border: isHero ? "2px solid #e30613" : "1px solid #333",
+                borderRadius: "16px",
+                padding: "14px",
               }}
             >
-              🗑️ Videoyu Kaldır
-            </button>
-          </article>
-        ))}
+              <video
+                src={video.videoUrl}
+                controls
+                preload="metadata"
+                style={{
+                  width: "100%",
+                  aspectRatio: "16 / 9",
+                  objectFit: "cover",
+                  background: "#000",
+                  borderRadius: "12px",
+                }}
+              />
+
+              <h3 style={{ margin: "14px 0 8px" }}>{video.title}</h3>
+
+              <p style={{ margin: "6px 0" }}>📂 {video.category}</p>
+
+              {video.featured && (
+                <p style={{ margin: "6px 0" }}>⭐ Öne çıkarılmış video</p>
+              )}
+
+              {isHero && (
+                <p
+                  style={{
+                    margin: "10px 0",
+                    color: "#ff3b45",
+                    fontWeight: "700",
+                  }}
+                >
+                  🎬 Aktif Hero Videosu
+                </p>
+              )}
+
+              <button
+                type="button"
+                onClick={() => makeHeroVideo(video)}
+                style={{
+                  width: "100%",
+                  marginTop: "14px",
+                  padding: "12px",
+                  border: "none",
+                  borderRadius: "10px",
+                  background: isHero ? "#555" : "#f2b705",
+                  color: isHero ? "#fff" : "#111",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                }}
+              >
+                {isHero ? "🎬 Hero Videosu Seçili" : "⭐ Bu Videoyu Hero Yap"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => removeVideo(video)}
+                style={{
+                  width: "100%",
+                  marginTop: "10px",
+                  padding: "12px",
+                  border: "none",
+                  borderRadius: "10px",
+                  background: "#e30613",
+                  color: "#fff",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                }}
+              >
+                🗑️ Videoyu Kaldır
+              </button>
+            </article>
+          );
+        })}
       </div>
     </div>
   );
