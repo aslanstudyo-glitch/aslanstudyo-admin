@@ -1,11 +1,31 @@
 import { useEffect, useMemo, useState } from "react";
-import { onValue, ref } from "firebase/database";
+import {
+  onValue,
+  orderByChild,
+  query,
+  ref,
+  startAt,
+} from "firebase/database";
 import { realtimeDb } from "../firebase";
+
+function getTodayKey() {
+  const date = new Date();
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
 
 function Analytics() {
   const [visitors, setVisitors] = useState([]);
+  const [totalVisits, setTotalVisits] = useState(0);
+  const [todayVisits, setTodayVisits] = useState(0);
+  const [last24Visits, setLast24Visits] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  // Anlık çevrim içi ziyaretçiler
   useEffect(() => {
     const presenceRef = ref(realtimeDb, "presence");
 
@@ -25,8 +45,74 @@ function Analytics() {
         setLoading(false);
       },
       (error) => {
-        console.error("Analytics verileri alınamadı:", error);
+        console.error("Canlı ziyaretçiler alınamadı:", error);
         setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // Toplam ziyaret sayısı
+  useEffect(() => {
+    const totalVisitsRef = ref(
+      realtimeDb,
+      "analytics/summary/totalVisits"
+    );
+
+    const unsubscribe = onValue(
+      totalVisitsRef,
+      (snapshot) => {
+        setTotalVisits(snapshot.val() || 0);
+      },
+      (error) => {
+        console.error("Toplam ziyaret alınamadı:", error);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // Bugünkü ziyaret sayısı
+  useEffect(() => {
+    const todayKey = getTodayKey();
+
+    const todayVisitsRef = ref(
+      realtimeDb,
+      `analytics/daily/${todayKey}/visits`
+    );
+
+    const unsubscribe = onValue(
+      todayVisitsRef,
+      (snapshot) => {
+        setTodayVisits(snapshot.val() || 0);
+      },
+      (error) => {
+        console.error("Bugünkü ziyaret alınamadı:", error);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // Son 24 saatteki ziyaretler
+  useEffect(() => {
+    const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
+
+    const visitLogsQuery = query(
+      ref(realtimeDb, "analytics/visitLogs"),
+      orderByChild("visitedAt"),
+      startAt(twentyFourHoursAgo)
+    );
+
+    const unsubscribe = onValue(
+      visitLogsQuery,
+      (snapshot) => {
+        setLast24Visits(snapshot.size);
+      },
+      (error) => {
+        console.error("Son 24 saat verisi alınamadı:", error);
+        setLast24Visits(0);
       }
     );
 
@@ -67,7 +153,9 @@ function Analytics() {
       <div className="dashboard-header">
         <div>
           <h1>Analytics</h1>
-          <p>Aslan Stüdyo canlı ziyaretçi ve sayfa hareketleri</p>
+          <p>
+            Aslan Stüdyo ziyaretçi ve sayfa hareketleri
+          </p>
         </div>
 
         <div className="live-status">
@@ -87,11 +175,20 @@ function Analytics() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon">📄</div>
+          <div className="stat-icon">👥</div>
 
           <div>
-            <h3>{sortedPages.length}</h3>
-            <span>Aktif Sayfa</span>
+            <h3>{todayVisits.toLocaleString("tr-TR")}</h3>
+            <span>Bugünkü Ziyaret</span>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-icon">🌍</div>
+
+          <div>
+            <h3>{totalVisits.toLocaleString("tr-TR")}</h3>
+            <span>Toplam Ziyaret</span>
           </div>
         </div>
 
@@ -99,8 +196,17 @@ function Analytics() {
           <div className="stat-icon">🔥</div>
 
           <div>
-            <h3>{sortedPages[0]?.[1] || 0}</h3>
-            <span>En Yoğun Sayfa</span>
+            <h3>{last24Visits.toLocaleString("tr-TR")}</h3>
+            <span>Son 24 Saat</span>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-icon">📄</div>
+
+          <div>
+            <h3>{sortedPages.length}</h3>
+            <span>Şu Anda Aktif Sayfa</span>
           </div>
         </div>
       </div>
@@ -124,19 +230,27 @@ function Analytics() {
 
           {!loading && visitors.length === 0 && (
             <p className="analytics-empty">
-              Şu anda sitede aktif ziyaretçi bulunmuyor.
+              Şu anda aktif ziyaretçi bulunmuyor.
             </p>
           )}
 
           {!loading && visitors.length > 0 && (
             <div className="live-visitors-list">
               {visitors.map((visitor, index) => (
-                <div className="live-visitor-row" key={visitor.id}>
-                  <div className="visitor-number">{index + 1}</div>
+                <div
+                  className="live-visitor-row"
+                  key={visitor.id}
+                >
+                  <div className="visitor-number">
+                    {index + 1}
+                  </div>
 
                   <div className="visitor-info">
                     <strong>Ziyaretçi</strong>
-                    <span>{formatPageName(visitor.page || "/")}</span>
+
+                    <span>
+                      {formatPageName(visitor.page || "/")}
+                    </span>
                   </div>
 
                   <span className="visitor-online-badge">
@@ -167,18 +281,30 @@ function Analytics() {
               {sortedPages.map(([page, count]) => {
                 const percentage =
                   visitors.length > 0
-                    ? Math.round((count / visitors.length) * 100)
+                    ? Math.round(
+                        (count / visitors.length) * 100
+                      )
                     : 0;
 
                 return (
-                  <div className="page-activity-item" key={page}>
+                  <div
+                    className="page-activity-item"
+                    key={page}
+                  >
                     <div className="page-activity-top">
-                      <strong>{formatPageName(page)}</strong>
+                      <strong>
+                        {formatPageName(page)}
+                      </strong>
+
                       <span>{count} kişi</span>
                     </div>
 
                     <div className="page-activity-bar">
-                      <span style={{ width: `${percentage}%` }}></span>
+                      <span
+                        style={{
+                          width: `${percentage}%`,
+                        }}
+                      ></span>
                     </div>
                   </div>
                 );
@@ -191,18 +317,21 @@ function Analytics() {
       <section className="analytics-panel analytics-coming-soon">
         <div>
           <span>Sıradaki aşama</span>
-          <h2>Gelişmiş Ziyaret Raporları</h2>
+
+          <h2>Ziyaret Grafikleri ve Cihazlar</h2>
+
           <p>
-            Bugünkü ziyaret, toplam ziyaret, son 24 saat, cihaz
-            dağılımı ve günlük grafikler sonraki aşamada eklenecek.
+            Günlük ziyaret grafiği, mobil ve bilgisayar
+            dağılımı, tarayıcı bilgileri ve en çok ziyaret
+            edilen sayfalar sonraki aşamada eklenecek.
           </p>
         </div>
 
         <div className="analytics-coming-tags">
-          <span>📅 Bugün</span>
-          <span>🌍 Toplam</span>
-          <span>📱 Cihazlar</span>
           <span>📈 Grafikler</span>
+          <span>📱 Cihazlar</span>
+          <span>🌐 Tarayıcılar</span>
+          <span>🏆 Sayfalar</span>
         </div>
       </section>
     </div>
