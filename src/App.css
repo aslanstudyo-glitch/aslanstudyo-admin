@@ -228,4 +228,243 @@ body{background:#0b0b0b;color:#fff}
   .stats-grid {
     grid-template-columns: 1fr;
   }
+}.analytics-page {
+  width: 100%;
+}
+
+.analytics-stats-grid {
+  margin-bottom: 28px;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 24px;
+}
+
+.analytics-panel {
+  padding: 26px;
+  border: 1px solid #ececec;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.07);
+}
+
+.analytics-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.analytics-panel-header span {
+  display: block;
+  margin-bottom: 6px;
+  color: #e30613;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.analytics-panel-header h2 {
+  margin: 0;
+  color: #111111;
+  font-size: 24px;
+}
+
+.analytics-panel-header > strong {
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: rgba(23, 184, 91, 0.1);
+  color: #159447;
+  font-size: 13px;
+}
+
+.analytics-empty {
+  margin: 0;
+  padding: 22px;
+  border-radius: 14px;
+  background: #f7f7f7;
+  color: #777777;
+  text-align: center;
+}
+
+.live-visitors-list,
+.page-activity-list {
+  display: grid;
+  gap: 12px;
+}
+
+.live-visitor-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px;
+  border: 1px solid #eeeeee;
+  border-radius: 15px;
+  background: #fafafa;
+}
+
+.visitor-number {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: #111111;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.visitor-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.visitor-info strong,
+.visitor-info span {
+  display: block;
+}
+
+.visitor-info strong {
+  margin-bottom: 3px;
+  color: #111111;
+}
+
+.visitor-info span {
+  overflow: hidden;
+  color: #777777;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visitor-online-badge {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(23, 184, 91, 0.1);
+  color: #159447;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.page-activity-item {
+  padding: 14px;
+  border: 1px solid #eeeeee;
+  border-radius: 15px;
+  background: #fafafa;
+}
+
+.page-activity-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.page-activity-top strong {
+  color: #111111;
+}
+
+.page-activity-top span {
+  color: #777777;
+  font-size: 13px;
+}
+
+.page-activity-bar {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8e8e8;
+}
+
+.page-activity-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #e30613, #ff5660);
+}
+
+.analytics-coming-soon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 24px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(227, 6, 19, 0.08),
+      #ffffff 60%
+    );
+}
+
+.analytics-coming-soon > div > span {
+  color: #e30613;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.analytics-coming-soon h2 {
+  margin: 7px 0 9px;
+  color: #111111;
+}
+
+.analytics-coming-soon p {
+  max-width: 680px;
+  margin: 0;
+  color: #666666;
+  line-height: 1.7;
+}
+
+.analytics-coming-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.analytics-coming-tags span {
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: #111111;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 1050px) {
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .analytics-panel {
+    padding: 19px;
+  }
+
+  .analytics-panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .analytics-coming-soon {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .analytics-coming-tags {
+    justify-content: flex-start;
+  }
+
+  .visitor-online-badge {
+    display: none;
+  }
 }

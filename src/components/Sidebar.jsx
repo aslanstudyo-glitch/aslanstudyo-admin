@@ -11,7 +11,14 @@ function Sidebar({ activePage, setActivePage }) {
           className={activePage === "dashboard" ? "active" : ""}
           onClick={() => setActivePage("dashboard")}
         >
-          📊 Kontrol Paneli
+          🏠 Kontrol Paneli
+        </button>
+
+        <button
+          className={activePage === "analytics" ? "active" : ""}
+          onClick={() => setActivePage("analytics")}
+        >
+          📈 Analytics
         </button>
 
         <button
@@ -42,7 +49,10 @@ function Sidebar({ activePage, setActivePage }) {
           📰 Duyurular
         </button>
 
-        <button>
+        <button
+          className={activePage === "comments" ? "active" : ""}
+          onClick={() => setActivePage("comments")}
+        >
           💬 Yorumlar
         </button>
 

@@ -9,6 +9,7 @@ import Reservations from "./pages/Reservations";
 import Settings from "./pages/Settings";
 import AdminLayout from "./layouts/AdminLayout";
 import "./App.css";
+import Analytics from "./pages/Analytics";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -21,6 +22,7 @@ function App() {
   return (
     <AdminLayout activePage={activePage} setActivePage={setActivePage}>
       {activePage === "dashboard" && <Dashboard />}
+      {activePage === "analytics" && <Analytics />}
       {activePage === "gallery" && <Gallery />}
       {activePage === "videos" && <Videos />}
       {activePage === "radio" && <Radio />}
