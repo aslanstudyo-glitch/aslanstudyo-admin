@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import VisitChart from "../components/VisitChart";
+
 import {
   onValue,
   orderByChild,
@@ -6,6 +8,7 @@ import {
   ref,
   startAt,
 } from "firebase/database";
+
 import { realtimeDb } from "../firebase";
 
 function getTodayKey() {
@@ -313,6 +316,7 @@ function Analytics() {
           )}
         </section>
       </div>
+      <VisitChart />
 
       <section className="analytics-panel analytics-coming-soon">
         <div>
